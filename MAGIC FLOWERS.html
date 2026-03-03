@@ -1,0 +1,531 @@
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Гүлдер Сиқыры</title>
+
+  <!-- Қаріптер мен символдар-->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Cormorant Garamond', serif; background: #0b0b0b url('https://www.transparenttextures.com/patterns/black-paper.png'); color: #d7a3a6; }
+    .menu-togler { position: fixed; top: 20px; left: 20px; width: 35px; height: 35px; background: linear-gradient(145deg, #b88a91, #9c7278); color: white; border: none; border-radius: 10px; cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px #0000004D; animation: pulse 2s infinite; }
+    .menu-togler:hover { background: linear-gradient(145deg, #a06f77, #8a5e65); transform: rotate(90deg); }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .page { display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; background: #1e1e1e url('https://www.transparenttextures.com/patterns/black-scales.png'); height: 100vh; position: fixed; left: 0; top: 0; padding: 2em 1em; display: flex; flex-direction: column; gap: 0.8em; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(-100%); z-index: 1000; border-right: 1px solid #3a2a2c; }
+    .sidebar.active { transform: translateX(0); box-shadow: 5px 0 15px #00000080; }
+    .sidebar h2 { color: #d7a3a6; font-size: 1.5em; margin-bottom: 1.5em; text-align: center; position: relative; padding-bottom: 10px; }
+    .sidebar h2:after { content: ""; position: absolute; bottom: 0; left: 25%; width: 50%; height: 1px; background: linear-gradient(to right, transparent, #b88a91, transparent); }
+    .sidebar a { color: #d7a3a6; text-decoration: none; font-weight: 500; padding: 0.7em 1em; border-radius: 5px; transition: all 0.3s; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1.1em; position: relative; overflow: hidden; }
+    .sidebar a:before { content: ""; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, #B88A9133, transparent); transition: all 0.6s; }
+    .sidebar a:hover { background: #2B2B2BB3; transform: translateX(5px); }
+    .sidebar a:hover:before { left: 100%; }
+    .sidebar a.active { background: #B88A9133; border-left: 3px solid #b88a91; }
+    .content { margin-left: 0; padding: 2em; flex: 1; width: 100%; transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+    .sidebar.active + .content { margin-left: 250px; }
+    .section { display: none; background: #2B2B2BD9; color: #d7a3a6; padding: 2.5em; margin-bottom: 2em; border-radius: 10px; box-shadow: 0 4px 8px #00000066; backdrop-filter: blur(4px); border: 1px solid #3a2a2c; animation: fadeIn 0.6s ease-out; opacity: 0; transform: translateY(10px); }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+    .section.active { display: block; opacity: 1; transform: translateY(0); }
+    .section h2 { color: #b88a91; font-size: 2em; margin-top: 0; position: relative; padding-bottom: 10px; font-family: 'EB Garamond', serif; }
+    .section h2:after { content: ""; position: absolute; bottom: 0; left: 0; width: 50px; height: 2px; background: linear-gradient(to right, #b88a91, transparent); }
+    .section p { font-size: 1.1em; line-height: 1.6; }
+    #home { background: url('rose-bg.jpg') no-repeat center center/cover; position: relative; min-height: 90vh; }
+    #home:before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #00000099; border-radius: 10px; }
+    #home .section-content { position: relative; z-index: 1; }
+    footer { text-align: center; padding: 2em 1em; background: #1E1E1ECC; color: #d7a3a6; margin-top: 2em; border-radius: 10px; border-top: 1px solid #3a2a2c; font-size: 0.9em; position: fixed; bottom: 0; width: calc(100% - 4em); z-index: 999; }
+    .zodiac-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 2rem; }
+    .zodiac-sign { background: #1E1E1EB3; border: 1px solid #3a2a2c; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+    .zodiac-sign:hover { transform: translateY(-5px); box-shadow: 0 5px 15px #B88A914D; border-color: #b88a91; }
+    .zodiac-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000CC; z-index: 2000; align-items: center; justify-content: center; }
+    .zodiac-modal-content { background: #1e1e1e; padding: 2rem; border-radius: 10px; max-width: 500px; width: 90%; border: 1px solid #b88a91; position: relative; }
+    .close-modal { position: absolute; top: 10px; right: 10px; font-size: 1.5rem; cursor: pointer; color: #d7a3a6; }
+    .date-input { display: flex; gap: 10px; margin-bottom: 1.5rem; align-items: center; }
+    .date-input input, .flower-filter input { background: #2B2B2BB3; border: 1px solid #3a2c2c; color: #d7a3a6; padding: 8px 12px; border-radius: 5px; font-family: 'Cormorant Garamond', serif; }
+    .date-input button, .flower-filter button, #start-quiz { background: #b88a91; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
+    .date-input button:hover, .flower-filter button:hover, #start-quiz:hover { background: #a06f77; }
+    .zodiac-result { margin-top: 1rem; padding: 1rem; background: #B88A911A; border-radius: 5px; display: none; }
+    .quiz-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 20px 0; }
+    .quiz-options button { background: #B88A914D; border: 1px solid #b88a91; color: #d7a3a6; padding: 10px; cursor: pointer; transition: all 0.3s; text-align: left; }
+    .quiz-options button:hover { background: #B88A9180; }
+    .flower-card { background: #1E1E1EB3; padding: 15px; margin-bottom: 15px; border-radius: 10px; border-left: 3px solid #b88a91; display: flex; align-items: center; gap: 15px; }
+    .flower-card.poisonous { border-left-color: #ff4d4d; }
+    .flower-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+    .warning { color: #ff4d4d; font-weight: bold; }
+    .color-container { display: flex; flex-direction: column; gap: 15px; margin-top: 2rem; }
+    .color-item { display: flex; align-items: center; gap: 15px; }
+    .color-square { width: 60px; height: 60px; border-radius: 5px; border: 1px solid #3a2c2c; transition: transform 0.3s; flex-shrink: 0; }
+    .color-square:hover { transform: scale(1.1); }
+    .red { background-color: #CC0000; }
+    .white { background-color: #ffffff; }
+    .purple { background-color: #800080; }
+    .yellow { background-color: #ffff00; }
+    .black { background-color: #000000; }
+    .blue { background-color: #0000CD; }
+    .pink { background-color: #FF69B4; }
+    .orange { background-color: #ffa500; }
+    .green { background-color: #008000; }
+    .color-info { display: none; padding: 10px; background: #1E1E1EB3; border-radius: 5px; font-size: 0.9em; transform: translateX(20px); opacity: 0; transition: all 0.3s ease; }
+    .color-info.active { display: block; transform: translateX(0); opacity: 1; }
+    .flower-facts-container { position: relative; width: 100%; min-height: 500px; padding: 2em; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; background: #2B2B2B33; border-radius: 10px; }
+    .flower-bud { width: 120px; height: 120px; background: linear-gradient(145deg, #d7a3a6, #b88a91); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1e1e1e; font-weight: bold; cursor: pointer; transition: transform 0.3s ease; box-shadow: 0 4px 12px #00000066; position: relative; overflow: hidden; }
+    .flower-bud:before { content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(120deg, transparent, #B88A914D, transparent); animation: shine 2s infinite; }
+    @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+    .flower-bud:hover { transform: scale(1.1); background: linear-gradient(145deg, #e0b3b4, #c29498); }
+    .flower-bud span { position: relative; z-index: 1; }
+    .flower-fact-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000CC; z-index: 2000; align-items: center; justify-content: center; }
+    .flower-fact-modal-content { background: #1e1e1e; padding: 2rem; border-radius: 10px; max-width: 500px; width: 90%; border: 1px solid #b88a91; position: relative; }
+    .incorrect-answers { margin-top: 1rem; padding: 1rem; background: #B88A911A; border-radius: 5px; }
+    .incorrect { color: #ff4d4d; }
+    .correct { color: #b88a91; }
+  </style>
+</head>
+<body>
+  <button class="menu-togler" onclick="toggleSidebar()">🌸</button>
+
+  <div class="page">
+    <div class="sidebar" id="sidebar">
+      <h2>Меню</h2>
+      <a onclick="showSectionById('home')" class="active"><i class="menu-icon fas fa-home"></i> Бас бет</a>
+      <a onclick="showSectionById('meanings')"><i class="menu-icon fas fa-book-open"></i> Мағыналары</a>
+      <a onclick="showSectionById('colors')"><i class="menu-icon fas fa-palette"></i> Түстер</a>
+      <a onclick="showSectionById('zodiac')"><i class="menu-icon fas fa-star"></i> Зодиак</a>
+      <a onclick="showSectionById('quiz')"><i class="menu-icon fas fa-question"></i> Викторина</a>
+      <a onclick="showSectionById('flower-facts')"><i class="menu-icon fas fa-comment"></i> Гүлдер туралы фактілер</a>
+    </div>
+
+    <div class="content" id="content">
+      <div id="home" class="section active">
+        <div class="section-content">
+          <h2>"Гүлдер Сиқырына" қош келдіңіз</h2>
+          <p>Гүлдер — бұл өмір, эмоциялар, уақытта тоқтап қалған табиғат.</p>
+          <p>Олардың сиқырына еніп, символикасының құпияларын ашып, сұлулығына батыңыз.</p>
+        </div>
+      </div>
+
+      <div id="meanings" class="section">
+        <div class="section-content">
+          <h2>Гүлдер тілі</h2>
+          <div class="flower-filter">
+            <p>Флориография — гүлдер тілі — Виктория дәуірінде, сезімдерді ашық білдіру мүмкін болмаған кезде, ерекше танымал болды.</p>
+            <input type="text" id="filter-text" placeholder="Атауы бойынша іздеу...">
+            <button onclick="filterFlowersByText()">Табу</button>
+          </div>
+          <div id="flowers-list">
+          </div>
+        </div>
+      </div>
+
+      <div id="colors" class="section">
+        <div class="section-content">
+          <h2>Мағыналар палитрасы</h2>
+          <p>Түсті басыңыз, оның мағынасын және кімге сыйлаған дұрыс екенін білу үшін.</p>
+          <div class="color-container" id="colors-list"></div>
+        </div>
+      </div>
+
+      <div id="zodiac" class="section">
+        <div class="section-content">
+          <h2>Зодиак белгілері бойынша гүлдер</h2>
+          <div class="date-input">
+            <input type="date" id="birthdate" max="2025-05-28">
+            <button onclick="findZodiacSign()">Менің белгімді білу</button>
+          </div>
+          <div id="zodiacResult" class="zodiac-result">
+            <h3 id="userZodiacSign"></h3>
+            <p id="zodiacFlower"></p>
+          </div>
+          <p>Зодиак белгісін таңдаңыз, оған сәйкес гүлдерді білу үшін:</p>
+          <div class="zodiac-container"></div>
+        </div>
+      </div>
+
+      <div id="quiz" class="section">
+        <div class="section-content">
+          <h2>Викторина: Гүлдер тілі</h2>
+          <button id="start-quiz" onclick="startQuiz()">Ойынды бастау</button>
+          <div id="quiz-content">
+            <div id="quiz-container"></div>
+            <div id="quiz-result" style="display: none;">
+              <h3>Сіздің нәтижеңіз: <span id="score">0</span>/12</h3>
+              <div id="incorrect-answers" class="incorrect-answers"></div>
+              <button onclick="startQuiz()">Қайтадан көру</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="flower-facts" class="section">
+        <div class="section-content">
+          <h2>Гүлдер туралы қызықты фактілер</h2>
+          <p>Көбірек білу үшін бүршікті басыңыз!</p>
+          <div class="flower-facts-container" id="flower-facts-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="zodiacModal" class="zodiac-modal">
+    <div class="zodiac-modal-content">
+      <span class="close-modal" onclick="closeModal('zodiacModal')">×</span>
+      <h2 id="modalZodiacTitle"></h2>
+      <p id="modalZodiacDate"></p>
+      <div id="modalZodiacContent"></div>
+    </div>
+  </div>
+
+  <div id="flowerFactModal" class="flower-fact-modal">
+    <div class="flower-fact-modal-content">
+      <span class="close-modal" onclick="closeModal('flowerFactModal')">×</span>
+      <h2 id="flowerFactTitle"></h2>
+      <div id="flowerFactContent"></div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      if (!sidebar) {
+        console.error('Sidebar элементі табылмады!');
+        return;
+      }
+      sidebar.classList.toggle('active');
+      const content = document.getElementById('content');
+      if (sidebar.classList.contains('active')) {
+        content.style.marginLeft = '250px';
+        localStorage.setItem('sidebarState', 'open');
+      } else {
+        content.style.marginLeft = '0';
+        localStorage.setItem('sidebarState', 'closed');
+      }
+    }
+
+    function showSectionById(id) {
+      document.querySelectorAll('.section').forEach(s => {
+        s.classList.remove('active');
+      });
+      const section = document.getElementById(id);
+      if (section) {
+        section.classList.add('active');
+      }
+      document.querySelectorAll('.sidebar a').forEach(link => {
+        link.classList.remove('active');
+      });
+      const activeLink = document.querySelector(`.sidebar a[onclick="showSectionById('${id}')"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+      if (id === 'quiz') {
+        document.getElementById('quiz-content').style.display = 'none';
+        document.getElementById('start-quiz').style.display = 'inline-block';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedState = localStorage.getItem('sidebarState');
+      if (savedState === 'open') {
+        document.getElementById('sidebar').classList.add('active');
+        document.getElementById('content').style.marginLeft = '250px';
+      }
+      setTimeout(() => {
+        const activeElement = document.querySelector('.section.active');
+        if (activeElement) {
+          activeElement.style.opacity = '1';
+          activeElement.style.transform = 'translateY(0)';
+        }
+      }, 100);
+      initZodiacSigns();
+      initFlowersData();
+      initFlowerFacts();
+      initColors();
+    });
+
+    const zodiacData = [
+      { name: "Тоқты", date: "21 наурыз - 19 сәуір", flower: "Алый мак", description: "Тоқтыларға жарқын, құмар гүлдер жарасады. Алый мак олардың энергиясы мен өміршеңдігін білдіреді. Сондай-ақ жарасады: қызыл қызғалдақтар, гвоздикалар, антуриумдар." },
+      { name: "Торпақ", date: "20 сәуір - 20 мамыр", flower: "Роза", description: "Торпақтар классикалық сұлулықты бағалайды. Розалар, әсіресе қызғылт және кремді, олардың сезімталдығын көрсетеді. Сондай-ақ жарасады: пиондар, ландыштар, шеңгелдер." },
+      { name: "Егіздер", date: "21 мамыр - 20 маусым", flower: "Лаванда", description: "Егіздерге ерекше, хош иісті гүлдер жарасады. Лаванда олардың өзгергіштігін білдіреді. Сондай-ақ жарасады: орхидеялар, маргариткалар, жасмин." },
+      { name: "Шаян", date: "21 маусым - 22 шілде", flower: "Ақ лилия", description: "Шаяндарға нәзік, үй гүлдері жарасады. Белая лилия олардың сезімталдығын көрсетеді. Сондай-ақ жарасады: кувшинкалар, гардениялар, гортензиялар." },
+      { name: "Арыстан", date: "23 шілде - 22 тамыз", flower: "Подсолнух", description: "Арыстандарға патшалық, жарқын гүлдер жарасады. Подсолнух олардың мақтанышын білдіреді. Сондай-ақ жарасады: гладиолустар, георгиндер, хризантемалар." },
+      { name: "Бикеш", date: "23 тамыз - 22 қыркүйек", flower: "Астра", description: "Бикештерге талғампаз, ұқыпты гүлдер жарасады. Астра олардың практикалығын көрсетеді. Сондай-ақ жарасады: цинниялар, фрезиялар, ұсақ розалар." },
+      { name: "Таразы", date: "23 қыркүйек - 22 қазан", flower: "Гортензия", description: "Таразыларға үйлесімді гүлдер жарасады. Гортензия олардың тепе-теңдікке ұмтылысын білдіреді. Сондай-ақ жарасады: қызғылт розалар, эустомалар, каллалар." },
+      { name: "Сарышаян", date: "23 қазан - 21 қараша", flower: "Хризантема", description: "Сарышаяндарға құпиялы гүлдер жарасады. Хризантема олардың құмарлығын көрсетеді. Сондай-ақ жарасады: қызыл гербералар, анемондар, глориозалар." },
+      { name: "Мерген", date: "22 қараша - 21 желтоқсан", flower: "Гвоздика", description: "Мергендерге батыл, ерекше гүлдер жарасады. Гвоздика олардың еркіндік сүйгіштігін білдіреді. Сондай-ақ жарасады: птицемлечниктер, стрелициялар, иристер." },
+      { name: "Тауешкі", date: "22 желтоқсан - 19 қаңтар", flower: "Плющ", description: "Тауешкілерге төзімді, ұзақ өмір сүретін өсімдіктер жарасады. Плющ олардың табандылығын көрсетеді. Сондай-ақ жарасады: ошаған, эвкалипт, камелиялар." },
+      { name: "Суқұйғыш", date: "20 қаңтар - 18 ақпан", flower: "Орхидея", description: "Суқұйғыштарға ерекше, экзотикалық гүлдер жарасады. Орхидея олардың өзіндік ерекшелігін білдіреді. Сондай-ақ жарасады: протеалар, антуриумдар, каллалар." },
+      { name: "Балықтар", date: "19 ақпан - 20 наурыз", flower: "Водяная лилия", description: "Балықтарға романтикалық, су гүлдері жарасады. Водяная лилия олардың арманшылдығын көрсетеді. Сондай-ақ жарасады: лотостар, гиацинттер, нарцисстер." }
+    ];
+
+    function initZodiacSigns() {
+      const container = document.querySelector('.zodiac-container');
+      container.innerHTML = '';
+      zodiacData.forEach(sign => {
+        const signElement = document.createElement('div');
+        signElement.className = 'zodiac-sign';
+        signElement.innerHTML = `<span>${sign.name}</span>`;
+        signElement.addEventListener('click', () => openModal(sign, 'zodiacModal'));
+        container.appendChild(signElement);
+      });
+    }
+
+    const flowerFactsData = [
+      { number: 1, title: "Жерлеу рәсіміндегі гүлдер", content: "Белые лилии жерлеу рәсімдерінде жиі қолданылады, себебі олар қайтыс болған жанның тыныштығы мен қалпына келтірілген тазалығын білдіреді." },
+      { number: 2, title: "Үйлену тойы букеті", content: "Үйлену тойы букеттері үшін розалар, пиондар және гортензиялар танымал, олар махаббатты, гүлденуді және жүрек сезімдерін білдіреді." },
+      { number: 3, title: "Қанша гүл сыйлайды", content: "Көптеген мәдениеттерде қуанышты оқиғаларда тақ санды гүлдер сыйлайды (мысалы, 3, 5, 7), себебі жұп сан жерлеу рәсімімен байланысты." },
+      { number: 4, title: "Жұп санды гүлдер", content: "Қазақстанда және басқа славян елдерінде жұп санды гүлдер (мысалы, 2, 4, 6) сыйламайды, бұл жаман ырым деп саналады және қайғымен байланысты." },
+      { number: 5, title: "Оңтүстік Кореяның символы", content: "Оңтүстік Кореяның ұлттық гүлі — Гибискус сирийский (Шарон раушаны), ол өлмейтіндік пен төзімділікті білдіреді." },
+      { number: 6, title: "Әулие Валентин күні", content: "Қызыл розалар — Әулие Валентин күніндегі басты гүл, терең махаббат пен құмарлықты білдіреді." },
+      { number: 7, title: "Туған күнге гүлдер", content: "Жарқын гүлдер, мысалы, подсолнухтар немесе гербералар, туған күндерге өте жарасады, қуаныш пен мерекені білдіреді." },
+      { number: 8, title: "Кешірім сұрауға гүлдер", content: "Ақ қызғалдақтар немесе гиацинттер 'кешіріңіз' деп айту үшін жиі сыйланады, кешірім мен шынайылықты білдіреді." },
+      { number: 9, title: "Достыққа гүлдер", content: "Сары розалар немесе хризантемалар — достар үшін тамаша таңдау, достық пен адалдықты білдіреді." },
+      { number: 10, title: "Мерейтойға гүлдер", content: "Бірінші мерейтойда дәстүрлі түрде гвоздикалар сыйланады, ал 50-ші мерейтойда — сары розалар мен шеңгелдер." },
+      { number: 11, title: "Жапонияның символы", content: "Гүлдеген сакура (шие гүлі) — Жапонияның символы, өмірдің өткіншілігі мен жаңаруды білдіреді." },
+      { number: 12, title: "Емдеуге арналған гүлдер", content: "Лаванда емдеу және тыныштықпен байланысты, стрессді азайту үшін ароматерапияда қолданылады." }
+    ];
+
+    function initFlowerFacts() {
+      const container = document.getElementById('flower-facts-container');
+      container.innerHTML = '';
+      flowerFactsData.forEach((fact, index) => {
+        const budElement = document.createElement('div');
+        budElement.className = 'flower-bud';
+        budElement.innerHTML = `<span>${fact.number}</span>`;
+        budElement.addEventListener('click', () => openModal(fact, 'flowerFactModal'));
+        container.appendChild(budElement);
+      });
+    }
+
+    function openModal(data, modalId) {
+      const modal = document.getElementById(modalId);
+      if (modalId === 'zodiacModal') {
+        document.getElementById('modalZodiacTitle').textContent = data.name;
+        document.getElementById('modalZodiacDate').textContent = data.date;
+        document.getElementById('modalZodiacContent').innerHTML = `<p><strong>Гүл:</strong> ${data.flower}</p><p>${data.description}</p>`;
+      } else if (modalId === 'flowerFactModal') {
+        document.getElementById('flowerFactTitle').textContent = data.title;
+        document.getElementById('flowerFactContent').innerHTML = `<p>${data.content}</p>`;
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    function findZodiacSign() {
+      const birthdate = new Date(document.getElementById('birthdate').value);
+      if (!birthdate.getTime()) {
+        alert('Дұрыс күнді енгізіңіз');
+        return;
+      }
+      const month = birthdate.getMonth() + 1;
+      const day = birthdate.getDate();
+      let zodiacSign = null;
+      if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) zodiacSign = zodiacData[0];
+      else if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) zodiacSign = zodiacData[1];
+      else if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) zodiacSign = zodiacData[2];
+      else if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) zodiacSign = zodiacData[3];
+      else if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) zodiacSign = zodiacData[4];
+      else if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) zodiacSign = zodiacData[5];
+      else if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) zodiacSign = zodiacData[6];
+      else if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) zodiacSign = zodiacData[7];
+      else if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) zodiacSign = zodiacData[8];
+      else if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) zodiacSign = zodiacData[9];
+      else if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) zodiacSign = zodiacData[10];
+      else if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) zodiacSign = zodiacData[11];
+      if (zodiacSign) {
+        const resultDiv = document.getElementById('zodiacResult');
+        document.getElementById('userZodiacSign').textContent = `Сіздің белгіңіз: ${zodiacSign.name}`;
+        resultDiv.style.display = 'block';
+        resultDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    window.addEventListener('click', function(event) {
+      if (event.target === document.getElementById('zodiacModal')) {
+        closeModal('zodiacModal');
+      }
+      if (event.target === document.getElementById('flowerFactModal')) {
+        closeModal('flowerFactModal');
+      }
+    });
+
+    const flowerQuiz = [
+      { question: "Жерлеу рәсімдерінде тыныштықты білдіру үшін қандай гүлдер жиі қолданылады?", options: ["Ақ лилия", "Қызыл розалар", "Подсолнухтар"], correct: 0 },
+      { question: "Қызыл роза нені білдіреді?", options: ["Достық", "Махаббат", "Сүйіспеншілік"], correct: 1 },
+      { question: "Қай түс құмарлық пен романтикалық махаббатпен байланысты?", options: ["Көк", "Сары", "Қызыл"], correct: 2 },
+      { question: "Үйлену тойы букеттеріне қандай гүлдер танымал?", options: ["Ромашкалар", "Розалар мен пиондар", "Қара розалар"], correct: 1 },
+      { question: "Белая лилия нені білдіреді?", options: ["Қауіп", "Пәктік", "Мақтаныш"], correct: 1 },
+      { question: "Қай түс пәктік пен руханилықты білдіреді?", options: ["Жасыл", "Күлгін", "Ақ"], correct: 2 },
+      { question: "Оңтүстік Кореяның ұлттық символы болып табылатын гүл қайсы?", options: ["Гүлдеген сакура", "Гибискус сирийский", "Лотос"], correct: 1 },
+      { question: "Лаванда нені білдіреді?", options: ["Емдеу", "Қызғаныш", "Байлық"], correct: 0 },
+      { question: "Қай түс тыныштық пен даналықпен байланысты?", options: ["Қызғылт сары", "Қызғылт",  "Көк"], correct: 2 },
+      { question: "Туған күндерге қандай гүлдер өте жарасады?", options: ["Подсолнухтар немесе гербералар", "Белые лилии", "Қара розалар"], correct: 0 },
+      { question: "Сары роза нені білдіреді?", options: ["Достық", "Қайғы", "Сенімділік"], correct: 0 },
+      { question: "Қай түс патшалық абырой мен табыспен байланысты?", options: ["Қара", "Күлгін", "Жасыл"], correct: 1 }
+    ];
+
+    let quizCurrentQuestion = 0;
+    let quizScore = 0;
+    let userAnswers = [];
+    let incorrectAnswers = [];
+
+    function startQuiz() {
+      quizCurrentQuestion = 0;
+      quizScore = 0;
+      userAnswers = [];
+      incorrectAnswers = [];
+      document.getElementById('quiz-result').style.display = 'none';
+      document.getElementById('quiz-content').style.display = 'block';
+      document.getElementById('start-quiz').style.display = 'inline-block';
+      showQuizQuestion();
+    }
+
+    function showQuizQuestion() {
+      if (quizCurrentQuestion >= flowerQuiz.length) {
+        showQuizResults();
+        return;
+      }
+      const quiz = flowerQuiz[quizCurrentQuestion];
+      const quizHTML = `
+        <p>Сұрақ ${quizCurrentQuestion + 1} / ${flowerQuiz.length}: ${quiz.question}</p>
+        <div class="quiz-options">
+          ${quiz.options.map((opt, i) => `<button onclick="checkQuizAnswer(${i})">${opt}</button>`).join('')}
+        </div>
+      `;
+      document.getElementById('quiz-container').innerHTML = quizHTML;
+    }
+
+    function checkQuizAnswer(selected) {
+      const quiz = flowerQuiz[quizCurrentQuestion];
+      userAnswers.push({ question: quiz.question, selected: selected, correct: quiz.correct });
+      if (selected === quiz.correct) {
+        quizScore++;
+      } else {
+        incorrectAnswers.push({
+          question: quiz.question,
+          userAnswer: quiz.options[selected],
+          correctAnswer: quiz.options[quiz.correct]
+        });
+      }
+      quizCurrentQuestion++;
+      showQuizQuestion();
+    }
+
+    function showQuizResults() {
+      document.getElementById('quiz-container').innerHTML = '';
+      document.getElementById('score').textContent = quizScore;
+      document.getElementById('quiz-result').style.display = 'block';
+      document.getElementById('start-quiz').style.display = 'inline-block';
+
+      if (quizScore === flowerQuiz.length) {
+        alert('Құттықтаймыз! Сіз барлық сұрақтарға дұрыс жауап бердіңіз! 🌸');
+      }
+
+      const incorrectDiv = document.getElementById('incorrect-answers');
+      if (incorrectAnswers.length > 0) {
+        const incorrectHTML = incorrectAnswers.map(item => `
+          <p><strong>Сұрақ:</strong> ${item.question}<br>
+          <span class="incorrect">Сіздің жауабыңыз: ${item.userAnswer}</span><br>
+          <span class="correct">Дұрыс жауап: ${item.correctAnswer}</span></p>
+        `).join('');
+        incorrectDiv.innerHTML = `<h3>Сіздің қателеріңіз:</h3>${incorrectHTML}`;
+      } else {
+        incorrectDiv.innerHTML = '<p>Қателер жоқ! Тамаша жұмыс!</p>';
+      }
+    }
+
+    const flowersData = [
+      { name: "Роза", color: "қызыл", meaning: "махаббат", poisonous: false, image: "https://i.pinimg.com/736x/6e/aa/21/6eaa21f6a03b55b3785d431cd0170c06.jpg" },
+      { name: "Ландыш", color: "ақ", meaning: "пәктік", poisonous: true, image: "https://i.pinimg.com/736x/64/fe/be/64febe252c67d6bf86ff8b16c7729004.jpg" },
+      { name: "Белладонна", color: "күлгін", meaning: "қауіпті сұлулық", poisonous: true, image: "https://i.pinimg.com/736x/8d/c9/d4/8dc9d4188fd28d09113955b15a2b10b5.jpg" },
+      { name: "Ромашка", color: "ақ", meaning: "шынайылық", poisonous: false, image: "https://i.pinimg.com/736x/65/5f/af/655faf72337e38e3bf42030308485b1f.jpg" },
+      { name: "Тюльпан", color: "қызыл", meaning: "құмарлық", poisonous: false, image: "https://i.pinimg.com/736x/b7/37/36/b73736b3a9c542416cb4e64dc618a791.jpg" },
+      { name: "Орхидея", color: "күлгін", meaning: "салтанат", poisonous: false, image: "https://i.pinimg.com/736x/b4/1b/b6/b41bb64b96e356f81e3e93f845a4ed79.jpg" },
+      { name: "Гвоздика", color: "қызыл", meaning: "таңдану", poisonous: false, image: "https://i.pinimg.com/736x/80/1e/dd/801edd5ae24b27bd9693a8b0fac37747.jpg" },
+      { name: "Астра", color: "күлгін", meaning: "талғампаздық", poisonous: false, image: "https://i.pinimg.com/736x/2f/47/cc/2f47cc0b7e62dfdd1fee963a70419094.jpg" },
+      { name: "Черная роза", color: "қара", meaning: "қоштасу", poisonous: false, image: "https://i.pinimg.com/736x/3d/cf/ac/3dcfacdae228767d40b9b4b679575c97.jpg" },
+      { name: "Подсолнух", color: "сары", meaning: "адалдық", poisonous: false, image: "https://i.pinimg.com/736x/dd/17/cf/dd17cf9177e00a11cc4b1274f8beb65a.jpg" },
+      { name: "Гиацинт", color: "көк", meaning: "ойын", poisonous: true, image: "https://i.pinimg.com/736x/81/f7/0c/81f70cfcafd5cb958fc3501df064512d.jpg" },
+      { name: "Олеандр", color: "қызғылт", meaning: "сақ болу", poisonous: true, image: "https://i.pinimg.com/736x/ca/13/13/ca1313493499204f22406e185ae17754.jpg" },
+      { name: "Фиалка", color: "күлгін", meaning: "кішіпейілділік", poisonous: false, image: "https://i.pinimg.com/736x/5b/e7/9f/5be79f605697559f6b8c86561a15e09d.jpg" },
+      { name: "Нарцисс", color: "сары", meaning: "эгоизм", poisonous: true, image: "https://i.pinimg.com/736x/75/b6/1c/75b61c47c43d7e0cfd3323d4d18279aa.jpg" },
+      { name: "Ирис", color: "көк", meaning: "даналық", poisonous: false, image: "https://i.pinimg.com/736x/2d/a2/6c/2da26c6decbe198f5f26a36f434ed133.jpg" },
+      { name: "Лотос", color: "ақ", meaning: "тазалық", poisonous: false, image: "https://i.pinimg.com/736x/56/b8/b3/56b8b3706a136af66efe6614cfa0aadb.jpg" },
+      { name: "Пион", color: "қызғылт", meaning: "гүлдену", poisonous: false, image: "https://i.pinimg.com/736x/8e/8a/59/8e8a59ccf8153f9957b973e2cb25064c.jpg" },
+      { name: "Аконит", color: "көк", meaning: "қауіп", poisonous: true, image: "https://i.pinimg.com/736x/7e/a1/b1/7ea1b1ac6fcd82414684f9663351d597.jpg" },
+      { name: "Гербера", color: "қызғылт сары", meaning: "қуаныш", poisonous: false, image: "https://i.pinimg.com/736x/4c/a8/a4/4ca8a495f1ee3a0bdb5cfb0abb4fe3a6.jpg" },
+      { name: "Мята", color: "жасыл", meaning: "сергу энергиясы", poisonous: false, image: "https://i.pinimg.com/736x/54/a8/6b/54a86bdefa860cbc789576030631b3c9.jpg" }
+    ];
+
+    const colorsData = [
+      { color: "Қызыл", class: "red", meaning: "құмарлық, күшті эмоциялар, романтикалық махаббат", gifting: "сүйікті адамға (күйеуге, әйелге, қызға, жігітке, маңызды қарым-қатынаста) немесе анаға терең құрмет білдіру үшін өте жарасады." },
+      { color: "Ақ", class: "white", meaning: "пәктік, тазалық, руханилық", gifting: "үйлену тойына, жаңа танысқа, әріптеске немесе көңіл айту белгісі ретінде жарасады." },
+      { color: "Күлгін", class: "purple", meaning: "патшалық абырой, табыс, таңдану", gifting: "ұстазға, мұғалімге немесе табысқа жеткен адамға (мысалы, бітіру кешінде) сыйлауға жарасады." },
+      { color: "Сары", class: "yellow", meaning: "достық, қуаныш, бірақ сонымен қатар қызғаныш", gifting: "достарға, әріптестерге немесе жақын адамның көңіл-күйін көтеру үшін өте жарасады." },
+      { color: "Қара", class: "black", meaning: "құпия, қоштасу, өлім", gifting: "сирек сыйланады, бірақ символдық қоштасуға (мысалы, көшу кезінде) немесе готикалық стильде қолдануға болады." },
+      { color: "Көк", class: "blue", meaning: "тыныштық, даналық, сенім", gifting: "достарға, аға-інілерге, әпке-қарындастарға немесе біреуді жұбату үшін жарасады." },
+      { color: "Қызғылт", class: "pink", meaning: "нәзіктік, алғыс, сүйіспеншілік", gifting: "жаңа ғана ұнатқан адамға, жаңа досқа, қызға немесе қарындасқа өте жарасады." },
+      { color: "Қызғылт сары", class: "orange", meaning: "ынта, энергия, қуаныш", gifting: "достарға, әріптестерге немесе жетістікті құттықтау үшін (мысалы, қызметте өсу кезінде) жарасады." },
+      { color: "Жасыл", class: "green", meaning: "жаңару, үйлесім, балғындық", gifting: "үйге кіру тойына, денсаулық тілеу немесе жаңа бастамалар үшін жарасады." }
+    ];
+
+    function initColors() {
+      const container = document.getElementById('colors-list');
+      colorsData.forEach(color => {
+        const colorElement = document.createElement('div');
+        colorElement.className = 'color-item';
+        colorElement.innerHTML = `
+          <div class="color-square ${color.class}" onclick="toggleColorMeaning(this)"></div>
+          <div class="color-info" id="color-info-${color.color.toLowerCase()}">
+            <h3>${color.color}</h3>
+            <p><strong>Мағынасы:</strong> ${color.meaning}</p>
+            <p><strong>Кімге сыйлау керек:</strong> ${color.gifting}</p>
+          </div>
+        `;
+        container.appendChild(colorElement);
+      });
+    }
+
+    function toggleColorMeaning(element) {
+      const colorItem = element.closest('.color-item');
+      const infoDiv = colorItem.querySelector('.color-info');
+      const isActive = infoDiv.classList.contains('active');
+
+      document.querySelectorAll('.color-info').forEach(div => {
+        div.classList.remove('active');
+      });
+
+      if (!isActive) {
+        infoDiv.classList.add('active');
+      }
+    }
+
+    function initFlowersData() {
+      displayFlowersByText(flowersData);
+    }
+
+    function filterFlowersByText() {
+      const keyword = document.getElementById('filter-text').value.toLowerCase();
+      const filtered = flowersData.filter(flower => keyword === '' || flower.name.toLowerCase().includes(keyword));
+      displayFlowersByText(filtered);
+    }
+
+    function displayFlowersByText(flowers) {
+      const html = flowers.map(flower => `
+        <div class="flower-card ${flower.poisonous ? 'poisonous' : ''}">
+          <img src="${flower.image}" alt="${flower.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/60x60?text=${flower.name}';">
+          <div>
+            <h3>${flower.name}</h3>
+            <p><strong>Мағынасы:</strong> ${flower.meaning}</p>
+            ${flower.poisonous ? '<p class="warning">☠️ Улы!</p>' : ''}
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('flowers-list').innerHTML = html || '<p>Гүлдер табылмады.</p>';
+    }
+  </script>
+</html>
