@@ -21,11 +21,11 @@ A beautifully designed interactive web app about the secret language of flowers 
 
 | Home | Language of Flowers |
 |---|---|
-| ![Home](screenshots/main-page.png) | ![Flower Meanings](screenshots/flower-meaning.png) |
+| ![Home](main-page.png) | ![Flower Meanings](flower-meaning.png) |
 
 | Color Palette | Zodiac Flowers |
 |---|---|
-| ![Colors](screenshots/color-meaning.png) | ![Zodiac](screenshots/zz-flower.png) |
+| ![Colors](color-meaning.png) | ![Zodiac](zz-flower.png) |
 
 ---
 
